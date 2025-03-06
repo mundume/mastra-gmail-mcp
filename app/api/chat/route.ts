@@ -24,18 +24,18 @@ export async function POST(req: Request) {
       },
     });
 
-    // for await (const part of response.fullStream) {
-    //   switch (part.type) {
-    //     case "error":
-    //       console.error(part.error);
-    //       break;
-    //     case "text-delta":
-    //       process.stdout.write(part.textDelta);
-    //       break;
-    //     case "tool-call":
-    //       console.info(`\n-> Tool call: ${part.toolName}\n`);
-    //   }
-    // }
+    for await (const part of response.fullStream) {
+      switch (part.type) {
+        case "error":
+          console.error(part.error);
+          break;
+        case "text-delta":
+          process.stdout.write(part.textDelta);
+          break;
+        case "tool-call":
+          console.info(`\n-> Tool call: ${part.toolName}\n`);
+      }
+    }
     return response.toDataStreamResponse();
   } finally {
     // Always disconnect when done
