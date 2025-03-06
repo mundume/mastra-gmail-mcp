@@ -1,8 +1,23 @@
 import { mastra } from "@/src/mastra";
-import { simpleMcpClient } from "@/src/mastra/mcp/mcp";
+import { MastraMCPClient } from "@mastra/mcp";
 
 export async function POST(req: Request) {
   const { messages, system, tools } = await req.json();
+  const simpleMcpClient = new MastraMCPClient({
+    name: "simple-mcp",
+    server: {
+      command: "npx",
+      args: [
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@mundume/simple-mcp",
+        "--config",
+        "{}",
+      ],
+    },
+  });
+
   const agent = mastra.getAgent("simpleMcpAgent");
 
   try {
