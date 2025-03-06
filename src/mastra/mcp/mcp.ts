@@ -5,18 +5,27 @@ import { google } from "@ai-sdk/google";
 // Sequential Thinking server as an example:
 // https://smithery.ai/server/@smithery-ai/server-sequential-thinking
 // Initialize the MCP client
-export const sequentialThinkingClient = new MastraMCPClient({
-  name: "sequential-thinking",
+export const simpleMcpClient = new MastraMCPClient({
+  name: "simple-mcp",
   server: {
     command: "npx",
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+    args: [
+      "-y",
+      "@smithery/cli@latest",
+      "run",
+      "@mundume/simple-mcp",
+      "--config",
+      "{}",
+    ],
   },
 });
 
 // Create a Mastra Agent
-export const mcpSequential = new Agent({
-  name: "Reasoning agent",
+export const simpleMcpAgent = new Agent({
+  name: "notes mcp",
   instructions:
-    "You solve problems by breaking them down into sequential steps. Use the sequential thinking tool to walk through your reasoning process step by step.",
+    "You are a helpful assistant that helps users manage their notes.",
   model: google("gemini-2.0-flash-001"),
 });
+
+// npx -y @smithery/cli@latest run @mundume/simple-mcp --config "{}"

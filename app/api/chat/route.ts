@@ -1,26 +1,24 @@
 import { mastra } from "@/src/mastra";
-import { sequentialThinkingClient } from "@/src/mastra/mcp/mcp";
-import { openai } from "@ai-sdk/openai";
-import { jsonSchema, streamText } from "ai";
-
-export const maxDuration = 30;
-export const revalidate = 1;
+import { simpleMcpClient } from "@/src/mastra/mcp/mcp";
 
 export async function POST(req: Request) {
   const { messages, system, tools } = await req.json();
-  const agent = mastra.getAgent("mcpSequential");
+  const agent = mastra.getAgent("simpleMcpAgent");
 
   try {
     // Connect to the MCP server
-    await sequentialThinkingClient.connect();
+
+    await simpleMcpClient.connect();
+    console.log("Connected to MCP server");
 
     // Get available tools
-    const sequentialThinkingTools = await sequentialThinkingClient.tools();
+    const simpleMcpTools = await simpleMcpClient.tools();
+    console.log("Available tools:", simpleMcpTools);
 
     // Use the agent with the Sequential Thinking tool
     const response = await agent.stream(messages, {
       toolsets: {
-        sequentialThinking: sequentialThinkingTools,
+        simpleMcp: simpleMcpTools,
       },
     });
 
@@ -36,9 +34,11 @@ export async function POST(req: Request) {
           console.info(`\n-> Tool call: ${part.toolName}\n`);
       }
     }
+    console.log(response.text);
     return response.toDataStreamResponse();
   } finally {
+    console.log("disconnecting");
     // Always disconnect when done
-    await sequentialThinkingClient.disconnect();
+    // await simpleMcpClient.disconnect();
   }
 }
