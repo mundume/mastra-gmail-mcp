@@ -54,6 +54,6 @@ export async function POST(req: Request) {
   } finally {
     console.log("disconnecting");
     // Always disconnect when done
-    // await simpleMcpClient.disconnect();
+    await simpleMcpClient.disconnect();
   }
 }
