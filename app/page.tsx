@@ -1,13 +1,8 @@
 import Chat from "@/components/chat";
-import { testGmail } from "./actions/test-gmail";
 
-export default async function Home() {
-  const res = await testGmail();
-  console.log(res);
-
+export default function Home() {
   return (
     <>
-      <p>{JSON.stringify(res)}</p>
       <Chat />;
     </>
   );

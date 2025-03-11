@@ -1,39 +1,57 @@
 import { mastra } from "@/src/mastra";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { MastraMCPClient } from "@mastra/mcp";
 
 export async function POST(req: Request) {
   const { messages, system, tools } = await req.json();
-  const simpleMcpClient = new MastraMCPClient({
-    name: "simple-mcp",
+
+  const user = await currentUser();
+  const access = await clerkClient();
+  if (!user) {
+    throw new Error("No user found");
+  }
+  const token = await access.users.getUserOauthAccessToken(user.id, "google");
+  if (token.totalCount < 1) throw new Error("No tokens for user");
+  const accessToken = token.data[0].token;
+  console.log({ accessToken });
+
+  const gmailMcpClient = new MastraMCPClient({
+    name: "gmail-email-lister",
     server: {
       command: "npx",
       args: [
         "-y",
         "@smithery/cli@latest",
         "run",
-        "@mundume/simple-mcp",
+        "@mundume/gmail-mcp",
         "--config",
-        "{}",
+        `{
+          "gmailApiKey": "${accessToken}"
+        }`,
       ],
+      // env: {
+      //   GMAIL_API_KEY: accessToken,
+      //   GMAIL_USER_ID: user.id,
+      // },
     },
   });
 
-  const agent = mastra.getAgent("simpleMcpAgent");
+  const agent = mastra.getAgent("gmailMcpAgent");
 
   try {
     // Connect to the MCP server
 
-    await simpleMcpClient.connect();
+    await gmailMcpClient.connect();
     console.log("Connected to MCP server");
 
     // Get available tools
-    const simpleMcpTools = await simpleMcpClient.tools();
-    console.log("Available tools:", simpleMcpTools);
+    const gmailMcpTools = await gmailMcpClient.tools();
+    console.log("Available tools:", gmailMcpTools);
 
     // Use the agent with the Sequential Thinking tool
     const response = await agent.stream(messages, {
       toolsets: {
-        simpleMcp: simpleMcpTools,
+        gmailMcp: gmailMcpTools,
       },
     });
 
@@ -54,6 +72,6 @@ export async function POST(req: Request) {
   } finally {
     console.log("disconnecting");
     // // Always disconnect when done
-    // await simpleMcpClient.disconnect();
+    await gmailMcpClient.disconnect();
   }
 }

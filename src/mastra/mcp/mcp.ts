@@ -7,10 +7,10 @@ import { google } from "@ai-sdk/google";
 // Initialize the MCP client
 
 // Create a Mastra Agent
-export const simpleMcpAgent = new Agent({
-  name: "notes mcp",
+export const gmailMcpAgent = new Agent({
+  name: "gmail-mcp",
   instructions:
-    "You are a helpful assistant that helps users manage their notes.",
+    "You are a helpful assistant that helps users manage their emails.",
   model: google("gemini-2.0-flash-001"),
 });
 

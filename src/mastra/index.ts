@@ -2,11 +2,11 @@ import { Mastra } from "@mastra/core/mastra";
 import { createLogger } from "@mastra/core/logger";
 import { weatherWorkflow } from "./workflows";
 import { weatherAgent } from "./agents";
-import { simpleMcpAgent } from "./mcp/mcp";
+import { gmailMcpAgent } from "./mcp/mcp";
 
 export const mastra = new Mastra({
   workflows: { weatherWorkflow },
-  agents: { weatherAgent, simpleMcpAgent },
+  agents: { weatherAgent, gmailMcpAgent },
   logger: createLogger({
     name: "Mastra",
     level: "info",
