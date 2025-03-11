@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     return response.toDataStreamResponse();
   } finally {
     console.log("disconnecting");
-    // Always disconnect when done
-    await simpleMcpClient.disconnect();
+    // // Always disconnect when done
+    // await simpleMcpClient.disconnect();
   }
 }
