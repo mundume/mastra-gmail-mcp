@@ -1,6 +1,6 @@
 import { Agent } from "@mastra/core/agent";
-import { MastraMCPClient } from "@mastra/mcp";
 import { google } from "@ai-sdk/google";
+import { instructions } from "../instructions";
 
 // Sequential Thinking server as an example:
 // https://smithery.ai/server/@smithery-ai/server-sequential-thinking
@@ -9,8 +9,7 @@ import { google } from "@ai-sdk/google";
 // Create a Mastra Agent
 export const gmailMcpAgent = new Agent({
   name: "gmail-mcp",
-  instructions:
-    "You are a helpful assistant that helps users manage their emails.",
+  instructions,
   model: google("gemini-2.0-flash-001"),
 });
 
